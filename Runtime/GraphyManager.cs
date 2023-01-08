@@ -782,15 +782,14 @@ namespace Tayx.Graphy
 
         public void StartRecording()
         {
-            if (m_initialized == false) return;
+            m_dataRecorder.StartRecording($"{Application.dataPath}/BenchmarkData.json");
             m_recoring = true;
-            m_dataRecorder.StartRecording();
         }
 
-        public void EndRecording()
+        public void StopRecording()
         {
-            m_dataRecorder.StopRecording();
             m_recoring = false;
+            m_dataRecorder.StopRecording();
         }
 
         #endregion
