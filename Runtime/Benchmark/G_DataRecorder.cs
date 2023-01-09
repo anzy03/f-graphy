@@ -20,19 +20,30 @@ namespace Tayx.Graphy.Recorder
         private List<FrameData> m_statData = null;
         private string m_filePath;
         private bool m_writeToFile = false;
-        private StreamWriter m_outputfile;
+        private StreamWriter m_outputfile = null;
 
+        public List<FrameData> RecordedData => m_statData;
+
+        /// <summary>
+        /// Starts Recoding Data.
+        /// </summary>
         public void StartRecording()
         {//Initalizing Data
             m_statData = new List<FrameData>();
             m_frameData = new FrameData();
         }
-        public void StartRecording(string recodingPath)
+        /// <summary>
+        /// Starts Recoding Data.
+        /// </summary>
+        /// <param name="recodingPath">File Path to write data to</param>
+        /// <param name="writeAtEnd">if true will write data in end else will write when recording ended</param>
+        public void StartRecording(string recodingPath,bool writeAtEnd = true)
         {
             StartRecording();
             m_filePath = recodingPath;
-            m_writeToFile = true;
-            m_outputfile = new StreamWriter(m_filePath,true);
+            m_writeToFile = !writeAtEnd;
+            if (m_writeToFile) m_outputfile = new StreamWriter(m_filePath, true);
+            else m_outputfile = null;
         }
 
         //Can be used as Update()
@@ -54,13 +65,19 @@ namespace Tayx.Graphy.Recorder
             }
         }
 
+        /// <summary>
+        /// Stops Recoding Data.
+        /// </summary>
         public void StopRecording()
         {
             // TODO: Record The Data in a File
             m_outputfile.Close();
+            if(m_writeToFile && m_filePath!= null)
+            {
+                WriteListToJsonFile(m_filePath, RecordedData);
+            }
         }
 
-        public List<FrameData> GetRecordedData() => m_statData;
 
         private void WriteListToJsonFile(string filePath, List<FrameData> list)
         {
